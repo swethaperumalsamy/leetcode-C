@@ -1,0 +1,129 @@
+struct Node {
+    int val;
+    struct Node* prev;
+    struct Node* next;
+};
+
+
+
+typedef struct {
+    struct Node*head;
+    struct Node*tail;
+    int size;
+} MyLinkedList;
+
+
+MyLinkedList* myLinkedListCreate() {
+    MyLinkedList*list=(MyLinkedList*)malloc(sizeof(MyLinkedList));
+    list->head=NULL;
+    list->tail=NULL;
+    list->size=0;
+    return list;
+    
+}
+
+int myLinkedListGet(MyLinkedList* obj, int index) {
+    if(index<0||index>=obj->size){
+    return -1;}
+    struct Node*temp=obj->head;
+    for(int i=0;i<index;i++){
+    temp=temp->next;}
+    return temp->val;
+
+    
+}
+
+void myLinkedListAddAtHead(MyLinkedList* obj, int val) {
+    struct Node*newNode=(struct Node*)malloc(sizeof(struct Node));
+    newNode->val=val;
+    newNode->prev=NULL;
+    newNode->next=obj->head;
+    if(obj->head!=NULL)
+    {
+        obj->head->prev=newNode;
+    }
+    else
+    {
+        obj->tail=newNode;
+    }
+    obj->head=newNode;
+    obj->size++;
+}
+
+void myLinkedListAddAtTail(MyLinkedList* obj, int val) {
+    struct Node* newNode = (struct Node*)malloc(sizeof(struct Node));
+    newNode->val = val;
+    newNode->next=NULL;
+    newNode->prev=obj->tail;
+    if(obj->tail!=NULL)
+    {
+        obj->tail->next=newNode;
+    }
+    else
+    {
+        obj->head=newNode;
+    }
+    obj->tail=newNode;
+    obj->size++;
+}
+
+void myLinkedListAddAtIndex(MyLinkedList* obj, int index, int val) {
+    if(index<0||index>obj->size)
+return;
+if(index==0)
+{
+    myLinkedListAddAtHead(obj,val);
+    return;
+}
+if(index==obj->size)
+{
+    myLinkedListAddAtTail(obj,val);
+    return;
+}
+struct Node*temp=obj->head;
+for(int i=0;i<index;i++)
+temp=temp->next;
+struct Node*newNode=(struct Node*)malloc(sizeof(struct Node));
+newNode->val=val;
+newNode->prev=temp->prev;
+newNode->next = temp;
+    temp->prev->next = newNode;
+    temp->prev = newNode;
+    obj->size++;
+}
+
+void myLinkedListDeleteAtIndex(MyLinkedList* obj, int index) {
+    if(index<0||index>=obj->size)
+    return;
+    struct Node*temp=obj->head;
+    for(int i=0;i<index;i++)
+    {
+        temp=temp->next;
+    }
+    if(temp->prev!=NULL)
+    {
+        temp->prev->next=temp->next;
+    }
+    else
+    obj->head=temp->next;
+    if(temp->next!=NULL)
+    {
+        temp->next->prev=temp->prev;
+    }
+    else
+    obj->tail=temp->prev;
+    free(temp);
+    obj->size--;
+}
+
+void myLinkedListFree(MyLinkedList* obj) {
+    struct Node*temp=obj->head;
+    while(temp!=NULL)
+    {
+        struct Node*nextNode=temp->next;
+        free(temp);
+        temp=nextNode;
+    }
+    free(obj);
+    
+}
